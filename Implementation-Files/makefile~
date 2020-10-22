@@ -1,0 +1,33 @@
+# define a variable to contain all of our object files (if this list changes, we only need to change the variable)
+objects = gol.o display.o cells.o
+
+# define a variable for our include directory
+include = includes
+
+# specify a search path for all prerequisites; looks for .o, .c or .h files in ./ or source/ or my_includes/
+VPATH = source:includes
+
+# provide a parameter for our implicit compilation rule (for gcc)
+CFLAGS = -I$(include)
+ 
+# our project will be called ese3025 and  it LINKS object files gol.o, display.o and cells.o
+ese3025_project : $(objects)
+	gcc -o ese3025_project $(objects) -lpthread -lncurses
+
+#compile gol.c to produce gol.o, if needed
+gol.o : gol.c gol_config.h display.h cells.h
+
+#compile display.c to produce display.o, if needed
+display.o : display.c display.h gol_config.h 
+
+#compile cells.c to produce cells.o, if needed
+cells.o : cells.c cells.h gol_config.h
+
+# a clean option that will remove proj_ds and any object files, with EXTRA features now!
+.PHONY : clean  # declaring clean as "phony" prevents it from being ignored if a file named "clean" happens to exist in the directory!
+clean :
+	-rm ese3025_project $(objects)
+
+#       ^
+#       |_______ with the "-" in front of rm, the rm command will continue to execute in spite of any errors generated (such as "file does not exist")
+
